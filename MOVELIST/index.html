@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>T7 MOVE LIST LOL</title>
+	<meta name="viewport" content="width=device-width, initial-scale=0.50, minimum-scale=0.10, maximum-scale=10.0, user-scalable=1">
+	<script src="d3.v4.min.js"></script>
+	<style type="text/css">
+		html, body {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+		html {
+			/*position: fixed;*/
+		}
+		body {
+			font-family: sans-serif;
+			display: flex;
+		}
+		#JSONDIV {
+			/*height: 95vh;*/
+			-webkit-overflow-scrolling: touch;
+			overflow-y: scroll;
+			padding-right: 1em;
+			/*margin-right: 1em;*/
+			flex: 0 0 auto;
+			padding-bottom: 50vh;
+		}
+		#JSONDIV ul {
+  			font-family: 'Consolas', 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace;
+		}
+		#JSONDIV li, #SCRIPT li {
+			cursor: pointer;
+		}
+		.DIFF1 {
+			background-color: #fdd;
+		}
+		.DIFF2 {
+			background-color: #dfd;
+		}
+		.DIFF3 {
+			background-color: #ffd;
+		}
+		#CHARUL li:hover
+			background-color: #cfc !important;
+		}
+		#LANG li:hover
+			background-color: #ffc !important;
+		}
+		#DIFF {
+			-webkit-overflow-scrolling: touch;
+			overflow-y: scroll;
+			overflow-x: auto;
+			/*flex: 1 1 100%;*/
+			/*flex: 1 4 50%;*/
+			flex: 1 1 auto;
+			width: 100%;
+			padding-right: 1em;
+			padding-left: 1em;
+			padding-bottom: 50vh;
+			display: block;
+		}
+		#SCRIPT {
+			-webkit-overflow-scrolling: touch;
+			overflow-y: scroll;
+			overflow-x: auto;
+			/*flex: 1 1 50%; */
+			flex: 1 1 30em;
+			padding-right: 1em;
+			padding-left: 1em;
+			padding-bottom: 50vh;
+		}
+		#SCRIPT.fold {
+			display: none;
+		}
+		.pre-wrap {
+			white-space: pre-wrap;
+		}
+		.BOXDIV {
+			text-align: right;
+			padding-right: 0.3em;
+			margin-left: 0.3em;
+			line-height: 1em;
+			flex: 0 0 auto;
+			min-width: 2em;
+			color: #999;
+		}
+		.UNOC {
+			display: none;
+		}
+
+		.MOVELIST thead {
+			background-color: #eee;
+			top: 0;
+			position: sticky;
+		}
+		.MOVELIST tbody tr:nth-child(even) {
+			background-color: #eee;
+		}
+		.MOVELIST thead th, .MOVELIST tbody td {
+			padding:5px;
+		}
+		small {
+			color: #999;
+		}
+
+	</style>
+</head>
+<body>
+<nav id="JSONDIV">
+<ul><li>f = FWD</li><li>F = FWD HOLD</li><li>AR = ARMOR</li><li>SP = SPIN</li><li>TR = TRACK</li></ul>
+<span>LANG</span>
+<ul id="LANG"><li>JAPAN</li><li class="DIFF3">USA</li><li>JAPAN</li><li>SPAIN</li><li>FRANCE</li><li>ITALY</li><li>GERMANY</li><li>SPAIN</li><li>RUSSIA</li><li>ARAB</li><li>CHINA</li><li>KOREA</li></ul>
+</nav>
+<aside id="SCRIPT" class="fold"><pre></pre></aside>
+<main id="DIFF"></main>
+<script type="text/javascript">
+if (!Element.prototype.scrollIntoViewIfNeeded) Element.prototype.scrollIntoViewIfNeeded = Element.prototype.scrollIntoView;
+var REGION = 1;
+var LANG = 1;
+var HASH = { NAME: null, INDEX: null, CLICK: false };
+
+var CHARFILE = [
+	{ c:"AKUMA"     , i:"32"} ,
+	{ c:"ALISA"     , i:"19"} ,
+	{ c:"ASUKA"     , i:"12"} ,
+	{ c:"BOB"       , i:"31"} ,
+	{ c:"BRYAN"     , i:"07"} ,
+	{ c:"CHLOE"     , i:"22"} ,
+	{ c:"CLAUDIO"   , i:"20"} ,
+	{ c:"DEVIL JIN" , i:"13"} ,
+	{ c:"DRAGUNOV"  , i:"16"} ,
+	{ c:"EDDY"      , i:"35"} ,
+	{ c:"ELIZA"     , i:"36"} ,
+	{ c:"FENG"      , i:"14"} ,
+	{ c:"GIGAS"     , i:"25"} ,
+	{ c:"HEIHACHI"  , i:"08"} ,
+	{ c:"HWOARANG"  , i:"04"} ,
+	{ c:"JACK-7"    , i:"11"} ,
+	{ c:"JIN"       , i:"06"} ,
+	{ c:"JOSIE"     , i:"24"} ,
+	{ c:"KATARINA"  , i:"21"} ,
+	{ c:"KAZUMI"    , i:"26"} ,
+	{ c:"KAZUYA"    , i:"09"} ,
+	{ c:"KING"      , i:"02"} ,
+	{ c:"KUMA"      , i:"33"} ,
+	{ c:"LARS"      , i:"18"} ,
+	{ c:"LAW"       , i:"01"} ,
+	{ c:"LEE"       , i:"30"} ,
+	{ c:"LEO"       , i:"17"} ,
+	{ c:"LILI"      , i:"15"} ,
+	{ c:"MIGUEL"    , i:"37"} ,
+	{ c:"NINA"      , i:"28"} ,
+	{ c:"PANDA"     , i:"34"} ,
+	{ c:"PAUL"      , i:"00"} ,
+	{ c:"RAVEN"     , i:"29"} ,
+	{ c:"SHAHEEN"   , i:"23"} ,
+	{ c:"STEVE"     , i:"10"} ,
+	{ c:"XIAOYU"    , i:"05"} ,
+	{ c:"YOSHI"     , i:"03"} ,
+	];
+function DEC2BIN(DEC) {
+	return d3.format("04b")((DEC>>0x4*3)&0xf) + " " + d3.format("04b")((DEC>>0x4*2)&0xf) + " " + d3.format("04b")((DEC>>0x4*1)&0xf) + " " + d3.format("04b")((DEC>>0x4*0)&0xf);
+}
+var PAD3 = d3.format("03");
+d3.select("#LANG").selectAll("li").on("click",function(d,i){ d3.selectAll(".DIFF3").classed("DIFF3",false); d3.select(this).classed("DIFF3",true);REGION=i<4?i:3; LANG=i; MECHASH(true); });
+d3.select("#JSONDIV").append("span").text("CHAR");
+d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHARFILE).enter().append("li").attr("value",function(d){return d.i;}).text(function(d){return d.c;}).attr("id",function(d){return "CHAR_"+d.i;}).on("click",function(charfile,cfi){
+	if (HASH.CLICK == false) UCHASH(charfile.i+"/"+charfile.c);
+	d3.selectAll(".DIFF2").classed("DIFF2",false);
+	d3.select(this).classed("DIFF2",true);
+	d3.json("MOVELIST_"+charfile.i+".json", function(error1, data1) {
+		var DIFF = d3.select("#DIFF");
+		DIFF.selectAll("*").remove();
+		var TABLE = DIFF.append("table").classed("MOVELIST",true);
+		var THEAD = TABLE.append("thead").append("tr");
+		THEAD.append("th").text("?");
+		THEAD.append("th").text("?");
+		THEAD.append("th").text("?");
+		THEAD.append("th").text("?");
+		THEAD.append("th").text("?");
+		THEAD.append("th").text("?");
+		THEAD.append("th").text("AR");
+		THEAD.append("th").text("SP");
+		THEAD.append("th").text("?");
+		THEAD.append("th").text("TR");
+		THEAD.append("th").text("#");
+		THEAD.append("th").text("MOVE");
+		THEAD.append("th").text("COMMAND");
+
+		var TR = TABLE.append("tbody").selectAll("tr").data(data1.moves).enter().append("tr");
+		TR.append("td").text(function(d){return d.b2 == 0 ? "" : d.b2;});
+		TR.append("td").text(function(d){return d.b3 == 0 ? "" : d.b3;});
+		TR.append("td").text(function(d){return d.b4 == 0 ? "" : d.b4;});
+		TR.append("td").text(function(d){return d.b5 == 0 ? "" : d.b5;});
+		TR.append("td").text(function(d){return d.b6 == 0 ? "" : d.b6;});
+		TR.append("td").text(function(d){return d.b7 == 0 ? "" : d.b7;});
+		TR.append("td").text(function(d){return d.b8 == 0 ? "" : "A"+d.b8;});
+		TR.append("td").text(function(d){return d.b9 == 0 ? "" : "S"+d.b9;});
+		TR.append("td").text(function(d){return d.bA == 0 ? "" : d.bA;});
+		TR.append("td").text(function(d){return d.bB == 0 ? "" : "T"+d.bB;});		
+		TR.append("td").text(function(d){return d.number == 0 ? "" : d.number;});
+		TR.append("td").text(function(d){return d.name[REGION];});
+		TR.append("td").html(function(d){return UCINPUT(d.command[LANG]);});
+	});
+	HASH.CLICK = false;
+});
+
+var INPUT = {
+	"\ue000":"db"  , "\ue001":"d"     , "\ue002":"df"    , "\ue003":"b"       , "\ue004":"f" , "\ue005":"ub"  , "\ue006":"u"   , "\ue007":"uf"    ,
+	"\ue008":"DB"  , "\ue009":"D"     , "\ue00A":"DF"    , "\ue00B":"B"       , "\ue00C":"F" , "\ue00D":"UB"  , "\ue00E":"U"   , "\ue00F":"UF"    ,
+	"\ue010":""    , "\ue011":""      , "\ue012":""      , "\ue013":""        , "\ue014":""  , "\ue015":"1"   , "\ue016":"2"   , "\ue017":"1+2"   ,
+	"\ue018":"3"   , "\ue019":"1+3"   , "\ue01A":"2+3"   , "\ue01B":"1+2+3"   , "\ue01C":"4" , "\ue01D":"1+4" , "\ue01E":"2+4" , "\ue01F":"1+2+4" ,
+	"\ue020":"3+4" , "\ue021":"1+3+4" , "\ue022":"2+3+4" , "\ue023":"1+2+3+4" , "\ue024":""  , "\ue025":""    , "\ue026":""    , "\ue027":""      ,
+	"\ue030":""    , "\ue031":""      , "\ue032":""      , "\ue033":""        , "\ue034":"N" , "\ue035":""    , "\ue036":""    , "\ue037":""      ,
+	"\ue060":""    , "\ue061":""      , "\ue062":""      , "\ue063":">"       , "\ue064":""  , "\ue065":""    , "\ue066":""    , "\ue067":""      ,
+}
+function UCINPUT(cmd) {
+	// \ue002\ue017
+	return cmd.replace(/[\ue000-\ue05F]/g,function(match){
+		return "<small>[</small> "+ (INPUT[match] || match.charCodeAt(0).toString(16))+" <small>]</small>";
+	}).replace(/[\ue060-\ue070]/g,function(match){
+		return INPUT[match] || "["+ (match.charCodeAt(0).toString(16))+"]";
+	});
+}
+function UCHASH(h) {
+	window.location.hash = "#" + h.replace(".json","");
+}
+function MECHASH(UNOC) {
+	var hash = window.location.hash.substr(1).replace(".json","").split("/");
+	var h = hash[0];
+	HASH.CLICK = true;
+	d3.select("#CHAR_"+h).node().click();
+	if (!UNOC) d3.select("#CHAR_"+h).node().scrollIntoViewIfNeeded();	
+}
+MECHASH();
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-72771119-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>

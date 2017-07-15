@@ -19,7 +19,18 @@
 			font-family: sans-serif;
 			display: flex;
 		}
-
+		.DIFF2 {
+			background-color: #dfd;
+		}
+		.DIFF3 {
+			background-color: #fdf;
+		}
+		#CLIPTWITCH li:hover {
+			background-color: #fcf !important;
+		}
+		#CLIPTWITCH li {
+			padding: 10px;
+		}
 		.CLIPNAV {
 			/*height: 95vh;*/
 			-webkit-overflow-scrolling: touch;
@@ -33,7 +44,7 @@
 		.CLIPNAV ul {
   			font-family: 'Consolas', 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace;
 		}
-		.CLIPNAV li, .CLIPASIDE li {
+		.CLIPNAV li, .CLIPASIDE li, #CLIPTWITCH {
 			cursor: pointer;
 		}
 		.CLIPASIDE ol li:hover, .CLIPUL li:hover {
@@ -93,67 +104,102 @@
 </head>
 <body>
 <nav id="CLIPNAV" class="CLIPNAV"></nav>
-<main id="CLIPMAIN">U C <a href="https://www.twitch.tv/tekken/clips">https://www.twitch.tv/tekken/clips</a> TOP 24H + TREND SORT TIME
-<div id="CLIPDIV"></div>
+<main id="CLIPMAIN">
+<div id="CLIPDIV"><br>&lt; U CLICK U C CLIP LOL<br><br><br></div>
+<div style="padding: 10px;">U C <span id="CLIPCHAN"><a href="https://www.twitch.tv/tekken/clips">https://www.twitch.tv/tekken/clips</a></span> TOP 24H + TREND SORT TIME</div>
+<div style="display: inline-block;"><ul id="CLIPTWITCH"></ul></div>
 </main>
 <script type="text/javascript">
 if (!Element.prototype.scrollIntoViewIfNeeded) Element.prototype.scrollIntoViewIfNeeded = Element.prototype.scrollIntoView;
 var PAD2 = d3.format("02");
 var PAD3 = d3.format("03");
-d3.request("https://api.twitch.tv/kraken/clips/top?channel=tekken&period=day&trending=false&limit=100")
-	.header("Accept", "application/vnd.twitchtv.v5+json")
-	.header("Client-ID", "xwbx1imddgs8r2hwq107btggkp5dos")
-	.response(function(xhr) { return JSON.parse(xhr.responseText); })
-	.get(function(err,data){
 
-		var clips = data.clips.filter(function(d){return d.vod != null;});
-		var clipset = {};
-		clips.forEach(function(d,i){ clipset[d.slug] = 1; });
+d3.select("#CLIPTWITCH").selectAll("li").data(["evo","evo1","evo2","evo3","evo4","evo5","capcomfighters","tekken","netherrealm","bandainamcous"])
+	.enter().append("li").text(function(d){return "twitch.tv/"+d;})
+	.on("click",function(d){
+		d3.selectAll(".DIFF3").classed("DIFF3",false);
+		d3.select(this).classed("DIFF3",true);
+		UCTWICH(d);
+	});
 
-		d3.request("https://api.twitch.tv/kraken/clips/top?channel=tekken&period=day&trending=true&limit=100")
-			.header("Accept", "application/vnd.twitchtv.v5+json")
-			.header("Client-ID", "xwbx1imddgs8r2hwq107btggkp5dos")
-			.response(function(xhr) { return JSON.parse(xhr.responseText); })
-			.get(function(err2,data2){
 
-				clips = clips.concat(data2.clips.filter(function(d){return d.vod != null && clipset[d.slug] != 1;}));
+function UCTWICH(channel) {
 
-				clips.forEach(function(d,i){
-					if (d.vod) {
-						var timestamp = d.vod.url.split("t=")[1];
-						var th = timestamp.match(/((\d+)h)/); if (th && th.length > 2) th = +th[2]; else th = 0
-						var tm = timestamp.match(/((\d+)m)/); if (tm && tm.length > 2) tm = +tm[2]; else tm = 0
-						var ts = timestamp.match(/((\d+)s)/); if (ts && ts.length > 2) ts = +ts[2]; else ts = 0
-						d.vod.th = th;
-						d.vod.tm = tm;
-						d.vod.ts = ts;
-						d.vod.timestamp = PAD2(th)+":"+PAD2(tm)+":"+PAD2(ts);
-					}
-				});
+	if (channel == "") channel = "tekken"; else UCHASH(channel);
 
-				var CLIPNEST = d3.nest()
-									.sortValues(function(a,b) { return a.vod.id < b.vod.id ? -1 :  a.vod.id > b.vod.id ? 1 : a.vod.timestamp < b.vod.timestamp ? -1 :  a.vod.timestamp > b.vod.timestamp ? 1 : 0; })
-									.entries(clips);
-				
-				var CLIPMAIN = d3.select("#CLIPMAIN");
-				var CLIPDIV = d3.select("#CLIPDIV");
-				var CLIPNAV = d3.select("#CLIPNAV");
-				var CLIPUL = CLIPNAV.append("ol").classed("CLIPUL",true);
-				CLIPNEST.forEach(function(d,i){
-					//CLIPLI.append("div").text(d.title);
-					if (d.vod) {
-						var CLIPLI = CLIPUL.append("li").attr("value",d.views).on("click",function(clip){ CLIPDIV.html(d.embed_html); }).style("max-width","40em");
-						var CLIPLIDIV = CLIPLI.append("div").classed("CLIPLI", true);
-						CLIPLIDIV.append("img").attr("src",d.thumbnails.tiny);//.style("vertical-align","middle");
-						CLIPLIDIV.append("time").text("[" + d.vod.timestamp + "]");
-						CLIPLIDIV.append("span").text(d.title);
-					}
-				});
-				
-				// console.log(CLIPNEST, CLIPNEST[0]);
-		});
-});
+	d3.select("#CLIPCHAN").html("<a href=\"https://www.twitch.tv/"+channel+"/clips\">https://www.twitch.tv/"+channel+"/clips</a>");
 
+	d3.request("https://api.twitch.tv/kraken/clips/top?channel="+channel+"&period=day&trending=false&limit=100")
+		.header("Accept", "application/vnd.twitchtv.v5+json")
+		.header("Client-ID", "xwbx1imddgs8r2hwq107btggkp5dos")
+		.response(function(xhr) { return JSON.parse(xhr.responseText); })
+		.get(function(err,data){
+
+			var clips = data.clips.filter(function(d){return d.vod != null;});
+			var clipset = {};
+			clips.forEach(function(d,i){ clipset[d.slug] = 1; });
+
+			d3.request("https://api.twitch.tv/kraken/clips/top?channel="+channel+"&period=day&trending=true&limit=100")
+				.header("Accept", "application/vnd.twitchtv.v5+json")
+				.header("Client-ID", "xwbx1imddgs8r2hwq107btggkp5dos")
+				.response(function(xhr) { return JSON.parse(xhr.responseText); })
+				.get(function(err2,data2){
+
+					clips = clips.concat(data2.clips.filter(function(d){return d.vod != null && clipset[d.slug] != 1;}));
+
+					clips.forEach(function(d,i){
+						if (d.vod) {
+							var timestamp = d.vod.url.split("t=")[1];
+							var th = timestamp.match(/((\d+)h)/); if (th && th.length > 2) th = +th[2]; else th = 0
+							var tm = timestamp.match(/((\d+)m)/); if (tm && tm.length > 2) tm = +tm[2]; else tm = 0
+							var ts = timestamp.match(/((\d+)s)/); if (ts && ts.length > 2) ts = +ts[2]; else ts = 0
+							d.vod.th = th;
+							d.vod.tm = tm;
+							d.vod.ts = ts;
+							d.vod.timestamp = PAD2(th)+":"+PAD2(tm)+":"+PAD2(ts);
+						}
+					});
+
+					var CLIPNEST = d3.nest()
+										.sortValues(function(a,b) { return a.vod.id < b.vod.id ? -1 :  a.vod.id > b.vod.id ? 1 : a.vod.timestamp < b.vod.timestamp ? -1 :  a.vod.timestamp > b.vod.timestamp ? 1 : 0; })
+										.entries(clips);
+					
+					var CLIPMAIN = d3.select("#CLIPMAIN");
+					var CLIPDIV = d3.select("#CLIPDIV");
+					var CLIPNAV = d3.select("#CLIPNAV");
+					CLIPNAV.selectAll("*").remove();
+					var CLIPUL = CLIPNAV.append("ol").classed("CLIPUL",true);
+					CLIPNEST.forEach(function(d,i){
+						//CLIPLI.append("div").text(d.title);
+						if (d.vod) {
+							var CLIPLI = CLIPUL.append("li").attr("value",d.views).style("max-width","40em").on("click",function(clip){
+								d3.selectAll(".DIFF2").classed("DIFF2",false);
+								d3.select(this).classed("DIFF2",true);
+								CLIPDIV.html(d.embed_html);
+							});
+							var CLIPLIDIV = CLIPLI.append("div").classed("CLIPLI", true);
+							CLIPLIDIV.append("img").attr("src",d.thumbnails.tiny);//.style("vertical-align","middle");
+							CLIPLIDIV.append("time").text("[" + d.vod.timestamp + "]");
+							CLIPLIDIV.append("span").text(d.title);
+						}
+					});
+					
+					// console.log(CLIPNEST, CLIPNEST[0]);
+			});
+	});
+
+}
+
+function UCHASH(h) {
+	window.location.hash = "#" + h;
+}
+
+function MECHASH() {
+  var h = window.location.hash.substr(1).replace(/[^A-Za-z0-9_]/g,"").trim();
+  UCTWICH(h);	
+}
+
+MECHASH();
 
 </script>
 

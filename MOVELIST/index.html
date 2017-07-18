@@ -214,7 +214,7 @@ d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHAR
 		var TR = TABLE.append("tbody").selectAll("tr").data(data1.moves).enter().append("tr");
 		TR.append("td").text(function(d){return d.ds == null ? "" : d.ds.length == 0 ? "" : d.ds.length;});
 		TR.append("td").text(function(d){return d.ds == null ? "" : d.d == -1 ? "" : d.d;});
-		TR.append("td").text(function(d){return d.ds == null ? "" : d.adv == -1000 ? "" : d.adv;});
+		TR.append("td").text(function(d){return d.ds == null ? "" : d.adv == -1000 ? "" : (d.adv >= 0 ? "+" : "") + d.adv;});
 		TR.append("td").text(function(d){return d.ds == null ? "" : d.s == -1 ? "" : d.s + "F";});
 		// TR.append("td").text(function(d){return d.b0;});
 		// TR.append("td").text(function(d){return d.b2 == 0 ? "" : d.b2;});

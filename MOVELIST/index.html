@@ -299,6 +299,7 @@ function UCHASH(h) {
 function MECHASH(UNOC) {
 	var hash = window.location.hash.substr(1).replace(".json","").split("/");
 	var h = hash[0];
+	if (h == "") h = "02";
 	HASH.CLICK = true;
 	d3.select("#CHAR_"+h).node().click();
 	if (!UNOC) d3.select("#CHAR_"+h).node().scrollIntoViewIfNeeded();	

@@ -227,7 +227,7 @@ d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHAR
 		TR.append("td").text(function(d){return d.b9 == 0 ? "" : "S"+d.b9;});
 		// TR.append("td").text(function(d){return d.bA == 0 ? "" : d.bA;});
 		TR.append("td").text(function(d){return d.bB == 0 ? "" : "T"+d.bB;});		
-		TR.append("td").text(function(d){return d.number == 0 ? "" : d.number;});
+		TR.append("td").text(function(d){return d.number == 0 ? "" : d.number+".";});
 
 		// TR.append("td").text(function(d){return d.name[REGION];}).style("text-align","left");
 		// TR.append("td").html(function(d){return UCINPUT(d.command[LANG]);}).style("text-align","left");

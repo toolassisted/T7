@@ -213,7 +213,7 @@ d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHAR
 
 		var TR = TABLE.append("tbody").selectAll("tr").data(data1.moves).enter().append("tr");
 		TR.append("td").text(function(d){return d.ds == null ? "" : d.ds.length == 0 ? "" : d.ds.length;});
-		TR.append("td").text(function(d){return d.ds == null ? "" : d.d == -1 ? "" : d.d;});
+		TR.append("td").text(function(d){return d.ds == null ? "" : d.d == -1 ? "" : d.d+1 ;});
 		TR.append("td").text(function(d){return d.ds == null ? "" : d.adv == -1000 ? "" : (d.adv >= 0 ? "+" : "") + d.adv;});
 		TR.append("td").text(function(d){return d.ds == null ? "" : d.s == -1 ? "" : d.s + "F";});
 		// TR.append("td").text(function(d){return d.b0;});
@@ -236,7 +236,7 @@ d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHAR
 		MOVETD.append("div").text(function(d){return d.name[REGION];}).style("font-weight","bold");
 		MOVETD.append("div").html(function(d){return UCINPUT(d.command[LANG]);});
 		MOVETD.append("div").classed("ATTACK",true).html(function(d){return d.at.map(function(attack){ return UCATTACK(attack); }).join('') + d.br.map(function(b){ return UCBREAK(b); }).join('');});
-		MOVETD.append("div").classed("ATTACK",true).html(function(d){return d.d == null ? "" : d.d == -1 ? "" : "<small>[</small> " + d.ds.length + " HIT <small>]</small><small>[</small> " + d.d + " DMG = " + d.ds.map(function(damage){ return damage.d; }).join(' + ') + " <small>]</small>";;});
+		MOVETD.append("div").classed("ATTACK",true).html(function(d){return d.d == null ? "" : d.d == -1 ? "" : "<small>[</small> " + d.ds.length + " HIT <small>]</small><small>[</small> " + (d.d+1) + " DMG = " + d.ds.map(function(damage){ return damage.d; }).join(' + ') + " <small>]</small>";;});
 	});
 	HASH.CLICK = false;
 });

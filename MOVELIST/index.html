@@ -42,6 +42,12 @@
 		.DIFF3 {
 			background-color: #ffd;
 		}
+		.DIFF4 {
+			background-color: #ddf;
+		}
+		#SORTUL li:hover {
+			background-color: #ccf !important;
+		}
 		#CHARUL li:hover {
 			background-color: #cfc !important;
 		}
@@ -96,7 +102,7 @@
 			position: sticky;
 		}
 		.MOVELIST tbody tr:nth-child(even) {
-			background-color: #eee;
+			background-color: #f8f8f8;
 		}
 		.MOVELIST thead th {
 			cursor: pointer;
@@ -105,13 +111,21 @@
 			background-color: #ffe;
 		}
 		.MOVELIST thead th, .MOVELIST tbody td {
-			padding: 5px;
+			padding: 0.5em;
 			text-align: center;
 		}
 		.MOVELIST .MOVETD {
 			text-align: left;
 			line-height: 1.5em;
-			padding-left: 1em;
+			/*padding-left: 0.5em;*/
+			vertical-align: top;			
+		}
+		.MOVELIST .NUMTD {
+			text-align: right;
+			line-height: 1.5em;
+			/*padding-right: 0.5em;*/
+			white-space: nowrap;
+			vertical-align: top;
 		}
 		small {
 			color: #999;
@@ -120,12 +134,21 @@
 			font-size: smaller;
 			opacity: 0.5;
 		}
+		.ATTACK-ARMOR {
+			color: #f00;
+		}
+		.ATTACK-SPIN {
+			color: #00f;
+		}
+		.ATTACK-TRACK {
+			color: #0c0;
+		}
 
 	</style>
 </head>
 <body>
 <nav id="JSONDIV">
-<ul><li>f = FWD</li><li>F = FWD HOLD</li><li>AR = ARMOR</li><li>SP = SPIN</li><li>TR = TRACK</li></ul>
+<ul><li>f = FWD</li><li>F = FWD HOLD</li><!-- <li>AR = ARMOR</li><li>SP = SPIN</li><li>TR = TRACK</li> --></ul>
 <span>LANG</span>
 <ul id="LANG"><li>JAPAN</li><li class="DIFF3">USA</li><li>JAPAN</li><li>SPAIN</li><li>FRANCE</li><li>ITALY</li><li>GERMANY</li><li>SPAIN</li><li>RUSSIA</li><li>ARAB</li><li>CHINA</li><li>KOREA</li></ul>
 </nav>
@@ -138,49 +161,51 @@ var LANG = 1;
 var HASH = { NAME: null, INDEX: null, CLICK: false };
 
 var CHARFILE = [
-	{ c:"AKUMA"     , i:"32"} ,
-	{ c:"ALISA"     , i:"19"} ,
-	{ c:"ASUKA"     , i:"12"} ,
-	{ c:"BOB"       , i:"31"} ,
-	{ c:"BRYAN"     , i:"07"} ,
-	{ c:"CHLOE"     , i:"22"} ,
-	{ c:"CLAUDIO"   , i:"20"} ,
-	{ c:"DEVIL JIN" , i:"13"} ,
-	{ c:"DRAGUNOV"  , i:"16"} ,
-	{ c:"EDDY"      , i:"35"} ,
-	{ c:"ELIZA"     , i:"36"} ,
-	{ c:"FENG"      , i:"14"} ,
-	{ c:"GIGAS"     , i:"25"} ,
-	{ c:"HEIHACHI"  , i:"08"} ,
-	{ c:"HWOARANG"  , i:"04"} ,
-	{ c:"JACK-7"    , i:"11"} ,
-	{ c:"JIN"       , i:"06"} ,
-	{ c:"JOSIE"     , i:"24"} ,
-	{ c:"KATARINA"  , i:"21"} ,
-	{ c:"KAZUMI"    , i:"26"} ,
-	{ c:"KAZUYA"    , i:"09"} ,
-	{ c:"KING"      , i:"02"} ,
-	{ c:"KUMA"      , i:"33"} ,
-	{ c:"LARS"      , i:"18"} ,
-	{ c:"LAW"       , i:"01"} ,
-	{ c:"LEE"       , i:"30"} ,
-	{ c:"LEO"       , i:"17"} ,
-	{ c:"LILI"      , i:"15"} ,
-	{ c:"MIGUEL"    , i:"37"} ,
-	{ c:"NINA"      , i:"28"} ,
-	{ c:"PANDA"     , i:"34"} ,
-	{ c:"PAUL"      , i:"00"} ,
-	{ c:"RAVEN"     , i:"29"} ,
-	{ c:"SHAHEEN"   , i:"23"} ,
-	{ c:"STEVE"     , i:"10"} ,
-	{ c:"XIAOYU"    , i:"05"} ,
-	{ c:"YOSHI"     , i:"03"} ,
+	{ c:"AKUMA"     , i:"32"} , 
+	{ c:"ALISA"     , i:"19"} , 
+	{ c:"ASUKA"     , i:"12"} , 
+	{ c:"BOB"       , i:"31"} , 
+	{ c:"BRYAN"     , i:"07"} , 
+	{ c:"CHLOE"     , i:"22"} , 
+	{ c:"CLAUDIO"   , i:"20"} , 
+	{ c:"DEVIL JIN" , i:"13"} , 
+	{ c:"DRAGUNOV"  , i:"16"} , 
+	{ c:"EDDY"      , i:"35"} , 
+	{ c:"ELIZA"     , i:"36"} , 
+	{ c:"FENG"      , i:"14"} , 
+	{ c:"GIGAS"     , i:"25"} , 
+	{ c:"HEIHACHI"  , i:"08"} , 
+	{ c:"HWOARANG"  , i:"04"} , 
+	{ c:"JACK-7"    , i:"11"} , 
+	{ c:"JIN"       , i:"06"} , 
+	{ c:"JOSIE"     , i:"24"} , 
+	{ c:"KATARINA"  , i:"21"} , 
+	{ c:"KAZUMI"    , i:"26"} , 
+	{ c:"KAZUYA"    , i:"09"} , 
+	{ c:"KING"      , i:"02"} , 
+	{ c:"KUMA"      , i:"33"} , 
+	{ c:"LARS"      , i:"18"} , 
+	{ c:"LAW"       , i:"01"} , 
+	{ c:"LEE"       , i:"30"} , 
+	{ c:"LEO"       , i:"17"} , 
+	{ c:"LILI"      , i:"15"} , 
+	{ c:"MIGUEL"    , i:"37"} , 
+	{ c:"NINA"      , i:"28"} , 
+	{ c:"PANDA"     , i:"34"} , 
+	{ c:"PAUL"      , i:"00"} , 
+	{ c:"RAVEN"     , i:"29"} , 
+	{ c:"SHAHEEN"   , i:"23"} , 
+	{ c:"STEVE"     , i:"10"} , 
+	{ c:"XIAOYU"    , i:"05"} , 
+	{ c:"YOSHI"     , i:"03"} , 
 	];
 function DEC2BIN(DEC) {
 	return d3.format("04b")((DEC>>0x4*3)&0xf) + " " + d3.format("04b")((DEC>>0x4*2)&0xf) + " " + d3.format("04b")((DEC>>0x4*1)&0xf) + " " + d3.format("04b")((DEC>>0x4*0)&0xf);
 }
 var PAD3 = d3.format("03");
 d3.select("#LANG").selectAll("li").on("click",function(d,i){ d3.selectAll(".DIFF3").classed("DIFF3",false); d3.select(this).classed("DIFF3",true);REGION=i<4?i:3; LANG=i; MECHASH(true); });
+d3.select("#JSONDIV").append("span").text("SORT");
+d3.select("#JSONDIV").append("ul").attr("id","SORTUL");
 d3.select("#JSONDIV").append("span").text("CHAR");
 d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHARFILE).enter().append("li").attr("value",function(d){return d.i;}).text(function(d){return d.c;}).attr("id",function(d){return "CHAR_"+d.i;}).on("click",function(charfile,cfi){
 	if (HASH.CLICK == false) UCHASH(charfile.i+"/"+charfile.c);
@@ -191,10 +216,10 @@ d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHAR
 		DIFF.selectAll("*").remove();
 		var TABLE = DIFF.append("table").classed("MOVELIST",true);
 		var THEAD = TABLE.append("thead").append("tr");
-		THEAD.append("th").text("HIT").on("click",function(){TR.sort(function(x, y){return d3.descending(x.ds.length, y.ds.length);});});
-		THEAD.append("th").text("DMG").on("click",function(){TR.sort(function(x, y){return d3.descending(x.d, y.d);});});
-		THEAD.append("th").text("HIT ADV").on("click",function(){TR.sort(function(x, y){return d3.descending(x.adv, y.adv);});});
-		THEAD.append("th").text("START").on("click",function(){TR.sort(function(x, y){return d3.ascending(x.s, y.s);});});
+		// THEAD.append("th").text("HIT").on("click",function(){TR.sort(function(x, y){return d3.descending(x.ds.length, y.ds.length);});});
+		// THEAD.append("th").text("DMG").on("click",function(){TR.sort(function(x, y){return d3.descending(x.d, y.d);});});
+		// THEAD.append("th").text("HIT ADV").on("click",function(){TR.sort(function(x, y){return d3.descending(x.adv, y.adv);});});
+		// THEAD.append("th").text("START").on("click",function(){TR.sort(function(x, y){return d3.ascending(x.s, y.s);});});
 		// THEAD.append("th").text("?");
 		// THEAD.append("th").text("?");
 		// THEAD.append("th").text("?");
@@ -202,20 +227,20 @@ d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHAR
 		// THEAD.append("th").text("?");
 		// THEAD.append("th").text("?");
 		// THEAD.append("th").text("?");
-		THEAD.append("th").text("AR").on("click",function(){TR.sort(function(x, y){return d3.descending(x.b8, y.b8);});});
-		THEAD.append("th").text("SP").on("click",function(){TR.sort(function(x, y){return d3.descending(x.b9, y.b9);});});
+		// THEAD.append("th").text("AR").on("click",function(){TR.sort(function(x, y){return d3.descending(x.b8, y.b8);});});
+		// THEAD.append("th").text("SP").on("click",function(){TR.sort(function(x, y){return d3.descending(x.b9, y.b9);});});
 		// THEAD.append("th").text("?");
-		THEAD.append("th").text("TR").on("click",function(){TR.sort(function(x, y){return d3.descending(x.bB, y.bB);});});
+		// THEAD.append("th").text("TR").on("click",function(){TR.sort(function(x, y){return d3.descending(x.bB, y.bB);});});
 		THEAD.append("th").text("#").on("click",function(){TABLE.select("tbody").selectAll("tr").sort(function(x, y){return d3.ascending(x.i, y.i);});});
 		// THEAD.append("th").text("MOVE").on("click",function(){TABLE.select("tbody").selectAll("tr").sort(function(x, y){return d3.ascending(x.name[REGION], y.name[REGION]);});});
 		// THEAD.append("th").text("COMMAND").on("click",function(){TABLE.select("tbody").selectAll("tr").sort(function(x, y){return d3.ascending(x.command[LANG], y.command[LANG]);});});
 		THEAD.append("th").text("MOVE").on("click",function(){TABLE.select("tbody").selectAll("tr").sort(function(x, y){return d3.ascending(x.i, y.i);});});
 
 		var TR = TABLE.append("tbody").selectAll("tr").data(data1.moves).enter().append("tr");
-		TR.append("td").text(function(d){return d.ds == null ? "" : d.ds.length == 0 ? "" : d.ds.length;});
-		TR.append("td").text(function(d){return d.ds == null ? "" : d.d == -1 ? "" : d.d+1 ;});
-		TR.append("td").text(function(d){return d.ds == null ? "" : d.adv == -1000 ? "" : (d.adv >= 0 ? "+" : "") + d.adv;});
-		TR.append("td").text(function(d){return d.ds == null ? "" : d.s == -1 ? "" : d.s + "F";});
+		// TR.append("td").text(function(d){return d.ds == null ? "" : d.ds.length == 0 ? "" : d.ds.length;});
+		// TR.append("td").text(function(d){return d.ds == null ? "" : d.d == 0 ? "" : d.d;});
+		// TR.append("td").text(function(d){return d.ds == null ? "" : d.adv == -1000 ? "" : (d.adv >= 0 ? "+" : "") + d.adv;});
+		// TR.append("td").text(function(d){return d.ds == null ? "" : d.s == -1 ? "" : d.s + "F";});
 		// TR.append("td").text(function(d){return d.b0;});
 		// TR.append("td").text(function(d){return d.b2 == 0 ? "" : d.b2;});
 		// TR.append("td").text(function(d){return d.b3 == 0 ? "" : d.b3;});
@@ -223,24 +248,55 @@ d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHAR
 		// TR.append("td").text(function(d){return d.b5 == 0 ? "" : d.b5;});
 		// TR.append("td").text(function(d){return d.b6 == 0 ? "" : d.b6;});
 		// TR.append("td").text(function(d){return d.b7 == 0 ? "" : d.b7;});
-		TR.append("td").text(function(d){return d.b8 == 0 ? "" : "A"+d.b8;});
-		TR.append("td").text(function(d){return d.b9 == 0 ? "" : "S"+d.b9;});
+		// TR.append("td").text(function(d){return d.b8 == 0 ? "" : "A"+d.b8;});
+		// TR.append("td").text(function(d){return d.b9 == 0 ? "" : "S"+d.b9;});
 		// TR.append("td").text(function(d){return d.bA == 0 ? "" : d.bA;});
-		TR.append("td").text(function(d){return d.bB == 0 ? "" : "T"+d.bB;});		
-		TR.append("td").text(function(d){return d.number == 0 ? "" : d.number+".";});
-
+		// TR.append("td").text(function(d){return d.bB == 0 ? "" : "T"+d.bB;});		
+		// TR.append("td").text(function(d){return d.number == 0 ? "" : d.number + ".";});
 		// TR.append("td").text(function(d){return d.name[REGION];}).style("text-align","left");
 		// TR.append("td").html(function(d){return UCINPUT(d.command[LANG]);}).style("text-align","left");
+
+		var SORTUL = d3.select("#SORTUL");
+		SORTUL.selectAll("*").remove();
+		SORTUL.append("li").text(charfile.c).classed("DIFF2",true);
+		// SORTUL.append("li").text("#").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.ascending(x.i, y.i);});});
+		SORTUL.append("li").text("MOVE").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.ascending(x.i, y.i);});});
+		// SORTUL.append("li").text("MOVE").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.ascending(x.name[REGION], y.name[REGION]);});});
+		SORTUL.append("li").text("COMMAND").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.ascending(x.command[LANG], y.command[LANG]);});});
+		SORTUL.append("li").text("HIT").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.ds.length, y.ds.length);});});
+		SORTUL.append("li").text("DAMAGE").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.d, y.d) || d3.ascending(x.i, y.i); });});
+		SORTUL.append("li").text("START").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.ascending(x.s, y.s) || d3.ascending(x.i, y.i); });});
+		SORTUL.append("li").text("HIT ADV").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.adv, y.adv) || d3.ascending(x.i, y.i); });});
+		SORTUL.append("li").text("ARMOR").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.b8 > 0 ? 1 : 0, y.b8 > 0 ? 1 : 0) || d3.ascending(x.i, y.i); });});
+		SORTUL.append("li").text("SPIN").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.b9 > 0 ? 1 : 0, y.b9 > 0 ? 1 : 0) || d3.ascending(x.i, y.i); });});
+		SORTUL.append("li").text("TRACK").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.bB > 0 ? 1 : 0, y.bB > 0 ? 1 : 0) || d3.ascending(x.i, y.i); });});
+		SORTUL.append("li").text("NOBLK").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.at.find(UCNOBLK) ? 1 : 0, y.at.find(UCNOBLK) ? 1 : 0) || d3.ascending(x.i, y.i); });});
+		SORTUL.append("li").text("THROW").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.at.find(UCTHROW) ? 1 : 0, y.at.find(UCTHROW) ? 1 : 0) || d3.ascending(x.i, y.i); });});
+
+		var NUMTD = TR.append("td").classed("NUMTD",true);
+		NUMTD.append("div").text(function(d){return d.number == 0 ? "" : d.number + ".";}).style("color","#999");
+		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.s == null || d.s == -1 ? "" : "<small>[</small> START " + d.s + "F <small>]</small>"); });
+		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.adv == null || d.adv == -1000 ? "" : "<small>[</small> HIT ADV " + (d.adv >= 0 ? "+" : "") + d.adv + " <small>]</small>"); });
+		NUMTD.append("div").classed("ATTACK",true).html(function(d){return d.d == null ? "" : d.d == 0 ? "" : "<small>[</small> DMG " + d.d + " <small>]</small>";;});
+		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.b8 == 0 ? "" : "<small>[</small> ARMOR <small>]</small>"); }).classed("ATTACK-ARMOR",true)
+		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.b9 == 0 ? "" : "<small>[</small> SPIN <small>]</small>"); }).classed("ATTACK-SPIN",true)
+		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.bB == 0 ? "" : "<small>[</small> TRACK <small>]</small>"); }).classed("ATTACK-TRACK",true)
 
 		var MOVETD = TR.append("td").classed("MOVETD",true);
 		MOVETD.append("div").text(function(d){return d.name[REGION];}).style("font-weight","bold");
 		MOVETD.append("div").html(function(d){return UCINPUT(d.command[LANG]);});
+		MOVETD.append("div").classed("ATTACK",true).html(function(d){return d.d == null ? "" : d.d == 0 ? "" : "<small>[</small> " + d.ds.length + " HIT = " + d.ds.map(function(damage){ return damage.d; }).join(' + ') + " <small>]</small>";;});
+		// MOVETD.append("div").classed("ATTACK",true).html(function(d){
+		// 	return (d.s == null || d.s == -1 ? "" : "<small>[</small> START " + d.s + "F <small>]</small>") 
+		// 	+ (d.adv == null || d.adv == -1000 ? "" : "<small>[</small> HIT ADV " + (d.adv >= 0 ? "+" : "") + d.adv + " <small>]</small>")
+		// 	+ (d.b8 == 0 ? "" : "<small>[</small> ARMOR <small>]</small>")
+		// 	+ (d.b9 == 0 ? "" : "<small>[</small> SPIN <small>]</small>")
+		// 	+ (d.bB == 0 ? "" : "<small>[</small> TRACK <small>]</small>")
+		// 	;});
 		MOVETD.append("div").classed("ATTACK",true).html(function(d){return d.at.map(function(attack){ return UCATTACK(attack); }).join('') + d.br.map(function(b){ return UCBREAK(b); }).join('');});
-		MOVETD.append("div").classed("ATTACK",true).html(function(d){return d.d == null ? "" : d.d == -1 ? "" : "<small>[</small> " + d.ds.length + " HIT <small>]</small><small>[</small> " + (d.d+1) + " DMG = " + d.ds.map(function(damage){ return damage.d; }).join(' + ') + " <small>]</small>";;});
 	});
 	HASH.CLICK = false;
 });
-
 function UCDAMAGE(damage) {
 	var s = "<small>[</small> ";
 	s += damage.d
@@ -275,6 +331,12 @@ function UCATTACK(attack) {
 	if (attack.t > 0) s += " THROW";
 	s += " <small>]</small>";
 	return s;
+}
+function UCNOBLK(attack) {
+	return attack.l == 7 || attack.l == 8;
+}
+function UCTHROW(attack) {
+	return attack.t > 0;
 }
 var INPUT = {
 	"\ue000":"db"  , "\ue001":"d"     , "\ue002":"df"    , "\ue003":"b"       , "\ue004":"f" , "\ue005":"ub"  , "\ue006":"u"   , "\ue007":"uf"    ,

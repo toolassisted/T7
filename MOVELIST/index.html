@@ -143,6 +143,15 @@
 		.ATTACK-TRACK {
 			color: #0c0;
 		}
+		.ATTACK-NOBLK {
+			color: #0cc;
+		}
+		.ATTACK-BLK0 {
+			color: #090;
+		}
+		.ATTACK-BLK10 {
+			color: #990;
+		}
 
 	</style>
 </head>
@@ -207,11 +216,11 @@ d3.select("#LANG").selectAll("li").on("click",function(d,i){ d3.selectAll(".DIFF
 d3.select("#JSONDIV").append("span").text("SORT");
 d3.select("#JSONDIV").append("ul").attr("id","SORTUL");
 d3.select("#JSONDIV").append("span").text("CHAR");
-d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHARFILE).enter().append("li").attr("value",function(d){return d.i;}).text(function(d){return d.c;}).attr("id",function(d){return "CHAR_"+d.i;}).on("click",function(charfile,cfi){
+var CHARLI = d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHARFILE).enter().append("li").attr("value",function(d){return d.i;}).text(function(d){return d.c;}).attr("id",function(d){return "CHAR_"+d.i;}).on("click",function(charfile,cfi){
 	if (HASH.CLICK == false) UCHASH(charfile.i+"/"+charfile.c);
 	d3.selectAll(".DIFF2").classed("DIFF2",false);
 	d3.select(this).classed("DIFF2",true);
-	d3.json("MOVELIST_"+charfile.i+".json", function(error1, data1) {
+	d3.json("BLK/MOVELIST_"+charfile.i+".json", function(error1, data1) {
 		var DIFF = d3.select("#DIFF");
 		DIFF.selectAll("*").remove();
 		var TABLE = DIFF.append("table").classed("MOVELIST",true);
@@ -266,6 +275,8 @@ d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHAR
 		SORTUL.append("li").text("HIT").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.ds.length, y.ds.length);});});
 		SORTUL.append("li").text("DAMAGE").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.d, y.d) || d3.ascending(x.i, y.i); });});
 		SORTUL.append("li").text("START").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.ascending(x.s, y.s) || d3.ascending(x.i, y.i); });});
+		SORTUL.append("li").text("LAST START").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.ascending(x.s2, y.s2) || d3.ascending(x.i, y.i); });});
+		SORTUL.append("li").text("BLK ADV").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.ascending(x.at.find(UCTHROW) ? 1 : 0, y.at.find(UCTHROW) ? 1 : 0) || d3.descending(x.blk, y.blk) || d3.ascending(x.i, y.i); });});
 		SORTUL.append("li").text("HIT ADV").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.adv, y.adv) || d3.ascending(x.i, y.i); });});
 		SORTUL.append("li").text("ARMOR").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.b8 > 0 ? 1 : 0, y.b8 > 0 ? 1 : 0) || d3.ascending(x.i, y.i); });});
 		SORTUL.append("li").text("SPIN").on("click",function(){ d3.selectAll(".DIFF4").classed("DIFF4",false); d3.select(this).classed("DIFF4",true); TR.sort(function(x, y){return d3.descending(x.b9 > 0 ? 1 : 0, y.b9 > 0 ? 1 : 0) || d3.ascending(x.i, y.i); });});
@@ -275,25 +286,34 @@ d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("li").data(CHAR
 
 		var NUMTD = TR.append("td").classed("NUMTD",true);
 		NUMTD.append("div").text(function(d){return d.number == 0 ? "" : d.number + ".";}).style("color","#999");
-		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.s == null || d.s == -1 ? "" : "<small>[</small> START " + d.s + "F <small>]</small>"); });
-		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.adv == null || d.adv == -1000 ? "" : "<small>[</small> HIT ADV " + (d.adv >= 0 ? "+" : "") + d.adv + " <small>]</small>"); });
+		// NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.s == null || d.s == -1 ? "" : "<small>[</small> START " + d.s + "F <small>]</small>"); });
+		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.blk == null || d.blk == -1000 ? "" : "<small>[</small> BLK " + (d.blk >= 0 ? "+" : "") + d.blk + " <small>]</small>"); }).classed("ATTACK-BLK10",function(d){return d.blk < 0 && d.blk >= -10;}).classed("ATTACK-BLK0",function(d){return d.blk >= 0;});
+		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.adv == null || d.adv == -1000 ? "" : "<small>[</small> HIT " + (d.adv >= 0 ? "+" : "") + d.adv + " <small>]</small>"); });
 		NUMTD.append("div").classed("ATTACK",true).html(function(d){return d.d == null ? "" : d.d == 0 ? "" : "<small>[</small> DMG " + d.d + " <small>]</small>";;});
-		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.b8 == 0 ? "" : "<small>[</small> ARMOR <small>]</small>"); }).classed("ATTACK-ARMOR",true)
-		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.b9 == 0 ? "" : "<small>[</small> SPIN <small>]</small>"); }).classed("ATTACK-SPIN",true)
-		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.bB == 0 ? "" : "<small>[</small> TRACK <small>]</small>"); }).classed("ATTACK-TRACK",true)
+		// NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.b8 == 0 ? "" : "<small>[</small> ARMOR <small>]</small>"); }).classed("ATTACK-ARMOR",true)
+		// NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.b9 == 0 ? "" : "<small>[</small> SPIN <small>]</small>"); }).classed("ATTACK-SPIN",true)
+		// NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.bB == 0 ? "" : "<small>[</small> TRACK <small>]</small>"); }).classed("ATTACK-TRACK",true)
 
 		var MOVETD = TR.append("td").classed("MOVETD",true);
 		MOVETD.append("div").text(function(d){return d.name[REGION];}).style("font-weight","bold");
 		MOVETD.append("div").html(function(d){return UCINPUT(d.command[LANG]);});
+		MOVETD.append("div").classed("ATTACK",true).html(function(d){return d.ss == null || d.s == -1 ? "" : "<small>[</small> " + d.s + ("F START = " + d.ss.map(function(start){ return start.s; }).join(' + ')).replace("= 0 +","= ") + " <small>]</small>";;});
 		MOVETD.append("div").classed("ATTACK",true).html(function(d){return d.d == null ? "" : d.d == 0 ? "" : "<small>[</small> " + d.ds.length + " HIT = " + d.ds.map(function(damage){ return damage.d; }).join(' + ') + " <small>]</small>";;});
 		// MOVETD.append("div").classed("ATTACK",true).html(function(d){
-		// 	return (d.s == null || d.s == -1 ? "" : "<small>[</small> START " + d.s + "F <small>]</small>") 
-		// 	+ (d.adv == null || d.adv == -1000 ? "" : "<small>[</small> HIT ADV " + (d.adv >= 0 ? "+" : "") + d.adv + " <small>]</small>")
-		// 	+ (d.b8 == 0 ? "" : "<small>[</small> ARMOR <small>]</small>")
-		// 	+ (d.b9 == 0 ? "" : "<small>[</small> SPIN <small>]</small>")
-		// 	+ (d.bB == 0 ? "" : "<small>[</small> TRACK <small>]</small>")
+		// 	return ""
+		// 	//+ (d.s == null || d.s == -1 ? "" : "<small>[</small> START " + d.s + "F <small>]</small>") 
+		// 	//+ (d.adv == null || d.adv == -1000 ? "" : "<small>[</small> HIT ADV " + (d.adv >= 0 ? "+" : "") + d.adv + " <small>]</small>")
+		// 	// + (d.b8 == 0 ? "" : "<span class=\"ATTACK-ARMOR\"><small>[</small> ARMOR <small>]</small></span>")
+		// 	// + (d.b9 == 0 ? "" : "<span class=\"ATTACK-SPIN\"><small>[</small> SPIN <small>]</small></span>")
+		// 	// + (d.bB == 0 ? "" : "<span class=\"ATTACK-TRACK\"><small>[</small> TRACK <small>]</small></span>")
 		// 	;});
-		MOVETD.append("div").classed("ATTACK",true).html(function(d){return d.at.map(function(attack){ return UCATTACK(attack); }).join('') + d.br.map(function(b){ return UCBREAK(b); }).join('');});
+		MOVETD.append("div").classed("ATTACK",true).html(function(d){
+			return d.at.map(function(attack){ return UCATTACK(attack); }).join('') 
+			+ d.br.map(function(b){ return UCBREAK(b); }).join('')
+			+ (d.b8 == 0 ? "" : "<span class=\"ATTACK-ARMOR\"><small>[</small> ARMOR <small>]</small></span>")
+			+ (d.b9 == 0 ? "" : "<span class=\"ATTACK-SPIN\"><small>[</small> SPIN <small>]</small></span>")
+			+ (d.bB == 0 ? "" : "<span class=\"ATTACK-TRACK\"><small>[</small> TRACK <small>]</small></span>")
+			;});
 	});
 	HASH.CLICK = false;
 });
@@ -323,8 +343,8 @@ function UCATTACK(attack) {
 		case 3: s += "PROJ"; break;
 		case 4: s += "SMID"; break;
 		case 5: s += "HIGH"; break;
-		case 7: s += "NOBLK"; break;
-		case 8: s += "NOBLK"; break;
+		case 7: s += "<span class=\"ATTACK-NOBLK\">" + "NOBLK" + "</span>"; break;
+		case 8: s += "<span class=\"ATTACK-NOBLK\">" + "NOBLK" + "</span>"; break;
 		case 11: s += "AA"; break;
 		default: s += ""; break;
 	}
@@ -367,6 +387,7 @@ function MECHASH(UNOC) {
 	//if (!UNOC) d3.select("#CHAR_"+h).node().scrollIntoViewIfNeeded();	
 }
 MECHASH();
+// CHARLI.sort(function(x, y){return d3.ascending(x.i, y.i);});
 </script>
 
 <script>

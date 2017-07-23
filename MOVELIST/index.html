@@ -230,7 +230,7 @@ var CHARLI = d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("l
 	if (HASH.CLICK == false) UCHASH(charfile.i+"/"+charfile.c);
 	d3.selectAll(".DIFF2").classed("DIFF2",false);
 	d3.select(this).classed("DIFF2",true);
-	d3.json("BLK/MOVELIST_"+charfile.i+".json", function(error1, data1) {
+	d3.json("MOVELIST_"+charfile.i+".json", function(error1, data1) {
 		var DIFF = d3.select("#DIFF");
 		DIFF.selectAll("*").remove();
 		var TABLE = DIFF.append("table").classed("MOVELIST",true);

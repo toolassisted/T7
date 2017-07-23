@@ -162,6 +162,26 @@
 			color: #300;
 			background-color: #fee;
 		}
+		.BREAK1 {
+			color: #003;
+			background-color: #eef;
+		}
+		.BREAK1 {
+			color: #003;
+			background-color: #eef;
+		}
+		.BREAK2 {
+			color: #330;
+			background-color: #ffe;
+		}
+		.BREAK3 {
+			color: #033;
+			background-color: #eff;
+		}
+		.BREAK4 {
+			color: #030;
+			background-color: #efe;
+		}
 
 	</style>
 </head>
@@ -230,7 +250,7 @@ var CHARLI = d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("l
 	if (HASH.CLICK == false) UCHASH(charfile.i+"/"+charfile.c);
 	d3.selectAll(".DIFF2").classed("DIFF2",false);
 	d3.select(this).classed("DIFF2",true);
-	d3.json("MOVELIST_"+charfile.i+".json", function(error1, data1) {
+	d3.json("BLK/MOVELIST_"+charfile.i+".json", function(error1, data1) {
 		var DIFF = d3.select("#DIFF");
 		DIFF.selectAll("*").remove();
 		var TABLE = DIFF.append("table").classed("MOVELIST",true);
@@ -319,7 +339,7 @@ var CHARLI = d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("l
 		// 	;});
 		MOVETD.append("div").classed("ATTACK",true).html(function(d){
 			return d.at.map(function(attack){ return UCATTACK(attack); }).join('') 
-			+ d.br.map(function(b){ return UCBREAK(b); }).join('')
+			+ d.br.map(function(b){ return "<span class=\"BREAK"+b.b+"\">" + UCBREAK(b) + "</span>"; }).join('')
 			+ (d.b8 == 0 ? "" : "<span class=\"ATTACK-ARMOR\"><small>[</small> ARMOR <small>]</small></span>")
 			+ (d.b9 == 0 ? "" : "<span class=\"ATTACK-SPIN\"><small>[</small> SPIN <small>]</small></span>")
 			+ (d.bB == 0 ? "" : "<span class=\"ATTACK-TRACK\"><small>[</small> TRACK <small>]</small></span>")

@@ -136,21 +136,27 @@
 		}
 		.ATTACK-ARMOR {
 			color: #f00;
+			background-color: #fee;
 		}
 		.ATTACK-SPIN {
 			color: #00f;
+			background-color: #eef;
 		}
 		.ATTACK-TRACK {
 			color: #0c0;
+			background-color: #efe;
 		}
 		.ATTACK-NOBLK {
 			color: #0cc;
+			background-color: #eff;
 		}
 		.ATTACK-BLK0 {
 			color: #090;
+			background-color: #dfd;
 		}
 		.ATTACK-BLK10 {
-			color: #990;
+			color: #330;
+			background-color: #ffd;
 		}
 
 	</style>
@@ -287,9 +293,9 @@ var CHARLI = d3.select("#JSONDIV").append("ul").attr("id","CHARUL").selectAll("l
 		var NUMTD = TR.append("td").classed("NUMTD",true);
 		NUMTD.append("div").text(function(d){return d.number == 0 ? "" : d.number + ".";}).style("color","#999");
 		// NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.s == null || d.s == -1 ? "" : "<small>[</small> START " + d.s + "F <small>]</small>"); });
-		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.blk == null || d.blk == -1000 ? "" : "<small>[</small> BLK " + (d.blk >= 0 ? "+" : "") + d.blk + " <small>]</small>"); }).classed("ATTACK-BLK10",function(d){return d.blk < 0 && d.blk >= -10;}).classed("ATTACK-BLK0",function(d){return d.blk >= 0;});
-		NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.adv == null || d.adv == -1000 ? "" : "<small>[</small> HIT " + (d.adv >= 0 ? "+" : "") + d.adv + " <small>]</small>"); });
-		NUMTD.append("div").classed("ATTACK",true).html(function(d){return d.d == null ? "" : d.d == 0 ? "" : "<small>[</small> DMG " + d.d + " <small>]</small>";;});
+		NUMTD.append("div").classed("ATTACK",true).append("span").html(function(d){ return (d.blk == null || d.blk == -1000 ? "" : "<small>[</small> BLK " + (d.blk >= 0 ? "+" : "") + d.blk + " <small>]</small>"); }).classed("ATTACK-BLK10",function(d){return d.blk < 0 && d.blk >= -10;}).classed("ATTACK-BLK0",function(d){return d.blk >= 0;});
+		NUMTD.append("div").classed("ATTACK",true).append("span").html(function(d){ return (d.adv == null || d.adv == -1000 ? "" : "<small>[</small> HIT " + (d.adv >= 0 ? "+" : "") + d.adv + " <small>]</small>"); });
+		NUMTD.append("div").classed("ATTACK",true).append("span").html(function(d){return d.d == null ? "" : d.d == 0 ? "" : "<small>[</small> DMG " + d.d + " <small>]</small>";;});
 		// NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.b8 == 0 ? "" : "<small>[</small> ARMOR <small>]</small>"); }).classed("ATTACK-ARMOR",true)
 		// NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.b9 == 0 ? "" : "<small>[</small> SPIN <small>]</small>"); }).classed("ATTACK-SPIN",true)
 		// NUMTD.append("div").classed("ATTACK",true).html(function(d){ return (d.bB == 0 ? "" : "<small>[</small> TRACK <small>]</small>"); }).classed("ATTACK-TRACK",true)
